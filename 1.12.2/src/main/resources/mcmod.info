@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "separate-chat-mod",
+    "name": "Separate Chat Mod",
+    "description": "",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [
+      "Yu_212"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
