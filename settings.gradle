@@ -1,0 +1,4 @@
+rootProject.name = 'separate-chat-mod'
+include '1.12.2'
+include '1.15.2'
+include '1.16.5'
