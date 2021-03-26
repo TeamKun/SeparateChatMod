@@ -8,6 +8,7 @@ import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class NewChatGuiExt extends NewChatGui {
     private final Minecraft mc;
@@ -95,11 +96,10 @@ public class NewChatGuiExt extends NewChatGui {
     @Override
     public ITextComponent getTextComponent(double x, double y) {
         if (isInSystemMessageRange(x, y)) {
-            int ny = 0;
-            return systemMessageGui.getTextComponent(x, ny);
+            int base = getChatMessageHeight() + getInterval();
+            return systemMessageGui.getTextComponent(x, y + base);
         } else if (isInChatMessageRange(x, y)) {
-            int ny = 0;
-            return chatMessageGui.getTextComponent(x, ny);
+            return chatMessageGui.getTextComponent(x, y);
         } else {
             return null;
         }
@@ -117,27 +117,30 @@ public class NewChatGuiExt extends NewChatGui {
     }
 
     @Override
-    public int getChatWidth() {
-        return calculateChatboxWidth(mc.gameSettings.chatWidth);
-    }
-
-    @Override
     public int getChatHeight() {
-        return calculateChatboxHeight(getChatOpen() ? mc.gameSettings.chatHeightFocused : mc.gameSettings.chatHeightUnfocused);
-    }
-
-    @Override
-    public double getScale() {
-        return mc.gameSettings.chatScale;
+        return getLineCount() * 9;
     }
 
     @Override
     public int getLineCount() {
-        return getChatHeight() / 9;
+        double x = mc.mouseHelper.getMouseX() * mc.func_228018_at_().getScaledWidth() / mc.func_228018_at_().getWidth();
+        double y = mc.mouseHelper.getMouseY() * mc.func_228018_at_().getScaledHeight() / mc.func_228018_at_().getHeight();
+        if (isInSystemMessageRange(x, y)) {
+            return systemMessageGui.getLineCount();
+        } else {
+            return chatMessageGui.getLineCount();
+        }
     }
 
     private boolean isChatMessage(ITextComponent component) {
-        return component.getUnformattedComponentText().contains("chat message");
+        String text = component.getString();
+        List<? extends String> patterns = ModConfiguration.chatPatterns.get();
+        for (String pattern : patterns) {
+            if (Pattern.compile(pattern).matcher(text).matches()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isInSystemMessageRange(double x, double y) {

@@ -41,12 +41,4 @@ public class SeparateChatMod {
             }
         }
     }
-
-    @net.minecraftforge.common.config.Config(modid = MOD_ID, name = MOD_ID)
-    public static class Config {
-        public static int focusedChatMessageHeight = 17;
-        public static int focusedSystemMessageHeight = 3;
-        public static int unfocusedChatMessageHeight = 7;
-        public static int unfocusedSystemMessageHeight = 3;
-    }
 }

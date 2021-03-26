@@ -7,8 +7,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.config.ModConfig;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,6 +19,7 @@ import java.lang.reflect.Modifier;
 @OnlyIn(Dist.CLIENT)
 public class SeparateChatMod {
     public SeparateChatMod() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ModConfiguration.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
