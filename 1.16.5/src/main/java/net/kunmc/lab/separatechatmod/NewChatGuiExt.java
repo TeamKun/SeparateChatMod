@@ -25,19 +25,20 @@ import java.util.regex.Pattern;
 
 public class NewChatGuiExt extends NewChatGui {
     private final Minecraft mc;
-    private final NewChatGui systemMessageGui;
-    private final NewChatGui chatMessageGui;
+    private final NewChatGuiInner systemMessageGui;
+    private final NewChatGuiInner chatMessageGui;
+    private int lastUpdateCounter;
 
     public NewChatGuiExt(Minecraft mcIn) {
         super(mcIn);
         this.mc = mcIn;
-        this.systemMessageGui = new NewChatGui(mcIn) {
+        this.systemMessageGui = new NewChatGuiInner(mcIn) {
             @Override
             public int getChatHeight() {
                 return getSystemMessageHeight();
             }
         };
-        this.chatMessageGui = new NewChatGui(mcIn) {
+        this.chatMessageGui = new NewChatGuiInner(mcIn) {
             @Override
             public int getChatHeight() {
                 return getChatMessageHeight();
@@ -47,9 +48,11 @@ public class NewChatGuiExt extends NewChatGui {
 
     @Override
     public void func_238492_a_(MatrixStack matrixStack, int updateCounter) {
+        lastUpdateCounter = updateCounter;
         chatMessageGui.func_238492_a_(matrixStack, updateCounter);
+        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
         matrixStack.push();
-        matrixStack.translate(0, -getChatMessageHeight() - getInterval(), 0);
+        matrixStack.translate(0, -base, 0);
         systemMessageGui.func_238492_a_(matrixStack, updateCounter);
         matrixStack.pop();
     }
@@ -105,7 +108,7 @@ public class NewChatGuiExt extends NewChatGui {
     @Override
     public boolean func_238491_a_(double x, double y) {
         if (isInSystemMessageRange(x, y)) {
-            int base = getChatMessageHeight() + getInterval();
+            int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
             return systemMessageGui.func_238491_a_(x, y + base);
         } else if (isInChatMessageRange(x, y)) {
             return chatMessageGui.func_238491_a_(x, y);
@@ -117,7 +120,7 @@ public class NewChatGuiExt extends NewChatGui {
     @Override
     public Style func_238494_b_(double x, double y) {
         if (isInSystemMessageRange(x, y)) {
-            int base = getChatMessageHeight() + getInterval();
+            int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
             return systemMessageGui.func_238494_b_(x, y + base);
         } else if (isInChatMessageRange(x, y)) {
             return chatMessageGui.func_238494_b_(x, y);
@@ -157,7 +160,7 @@ public class NewChatGuiExt extends NewChatGui {
 
     private boolean isChatMessage(ITextComponent component) {
         String text = component.getString();
-        String[] patterns = ModConfiguration.chatPatterns.get();
+        List<? extends String> patterns = ModConfiguration.chatPatterns.get();
         for (String pattern : patterns) {
             if (Pattern.compile(pattern).matcher(text).matches()) {
                 return true;
@@ -168,7 +171,7 @@ public class NewChatGuiExt extends NewChatGui {
 
     private boolean isInSystemMessageRange(double x, double y) {
         double scale = getScale();
-        int base = getChatMessageHeight() + getInterval();
+        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
         x = MathHelper.floor((x - 2) / scale);
         y = MathHelper.floor((mc.getMainWindow().getScaledHeight() - y - 40 - base) / scale);
         int count = systemMessageGui.getLineCount();

@@ -7,5 +7,5 @@ public class ModConfiguration {
     public static int unfocusedChatMessageHeight = 7;
     public static int unfocusedSystemMessageHeight = 3;
     public static int interval = 2;
-    public static String[] chatPatterns = new String[] {"<\\w{3,16}> .+"};
+    public static String[] chatPatterns = new String[] {"<\\w{3,16}> .+", "\\[Server] .+"};
 }

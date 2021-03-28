@@ -12,19 +12,20 @@ import java.util.regex.Pattern;
 
 public class NewChatGuiExt extends NewChatGui {
     private final Minecraft mc;
-    private final NewChatGui systemMessageGui;
-    private final NewChatGui chatMessageGui;
+    private final NewChatGuiInner systemMessageGui;
+    private final NewChatGuiInner chatMessageGui;
+    private int lastUpdateCounter;
 
     public NewChatGuiExt(Minecraft mcIn) {
         super(mcIn);
         this.mc = mcIn;
-        this.systemMessageGui = new NewChatGui(mcIn) {
+        this.systemMessageGui = new NewChatGuiInner(mcIn) {
             @Override
             public int getChatHeight() {
                 return getSystemMessageHeight();
             }
         };
-        this.chatMessageGui = new NewChatGui(mcIn) {
+        this.chatMessageGui = new NewChatGuiInner(mcIn) {
             @Override
             public int getChatHeight() {
                 return getChatMessageHeight();
@@ -34,8 +35,10 @@ public class NewChatGuiExt extends NewChatGui {
 
     @Override
     public void render(int updateCounter) {
+        lastUpdateCounter = updateCounter;
         chatMessageGui.render(updateCounter);
-        RenderSystem.translatef(0, -getChatMessageHeight() - getInterval(), 0);
+        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
+        RenderSystem.translatef(0, -base, 0);
         systemMessageGui.render(updateCounter);
     }
 
@@ -96,7 +99,7 @@ public class NewChatGuiExt extends NewChatGui {
     @Override
     public ITextComponent getTextComponent(double x, double y) {
         if (isInSystemMessageRange(x, y)) {
-            int base = getChatMessageHeight() + getInterval();
+            int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
             return systemMessageGui.getTextComponent(x, y + base);
         } else if (isInChatMessageRange(x, y)) {
             return chatMessageGui.getTextComponent(x, y);
@@ -145,7 +148,7 @@ public class NewChatGuiExt extends NewChatGui {
 
     private boolean isInSystemMessageRange(double x, double y) {
         double scale = getScale();
-        int base = getChatMessageHeight() + getInterval();
+        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
         x = MathHelper.floor((x - 2) / scale);
         y = MathHelper.floor((mc.func_228018_at_().getScaledHeight() - y - 40 - base) / scale);
         int count = chatMessageGui.getLineCount();

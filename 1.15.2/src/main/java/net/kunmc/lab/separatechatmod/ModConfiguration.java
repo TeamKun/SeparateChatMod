@@ -2,6 +2,7 @@ package net.kunmc.lab.separatechatmod;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ModConfiguration {
         unfocusedChatMessageHeight = builder.define("unfocusedChatMessageHeight", 7);
         unfocusedSystemMessageHeight = builder.define("unfocusedSystemMessageHeight", 3);
         interval = builder.define("interval", 2);
-        chatPatterns = builder.defineList("chatPatterns", Collections.singletonList("<\\w{3,16}> .+"), obj -> obj instanceof String);
+        chatPatterns = builder.defineList("chatPatterns", Arrays.asList("<\\w{3,16}> .+", "\\[Server] .+"), obj -> obj instanceof String);
         SPEC = builder.build();
     }
 }
