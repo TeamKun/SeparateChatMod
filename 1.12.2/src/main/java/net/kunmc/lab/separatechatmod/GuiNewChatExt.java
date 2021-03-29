@@ -39,9 +39,12 @@ public class GuiNewChatExt extends GuiNewChat {
     public void drawChat(int updateCounter) {
         lastUpdateCounter = updateCounter;
         chatMessageGui.drawChat(updateCounter);
-        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
-        GlStateManager.translate(0, -base, 0);
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 1 + mc.fontRenderer.FONT_HEIGHT * (systemMessageGui.drawChatCount(lastUpdateCounter) - 1), 0);
         systemMessageGui.drawChat(updateCounter);
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
     }
 
     @Override
@@ -107,7 +110,7 @@ public class GuiNewChatExt extends GuiNewChat {
         int x = mouseX / factor;
         int y = mouseY / factor;
         if (isInSystemMessageRange(x, y)) {
-            int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
+            int base = resolution.getScaledHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter) - 40;
             return systemMessageGui.getChatComponent(mouseX, mouseY - base * factor);
         } else if (isInChatMessageRange(x, y)) {
             return chatMessageGui.getChatComponent(mouseX, mouseY);
@@ -157,10 +160,11 @@ public class GuiNewChatExt extends GuiNewChat {
     }
 
     private boolean isInSystemMessageRange(int x, int y) {
+        ScaledResolution resolution = new ScaledResolution(mc);
         double scale = getChatScale();
-        int base = getChatMessageHeight() + getInterval() + getSystemMessageHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
+        int base = resolution.getScaledHeight() - mc.fontRenderer.FONT_HEIGHT * systemMessageGui.drawChatCount(lastUpdateCounter);
         x = MathHelper.floor((x - 2) / scale);
-        y = MathHelper.floor((y - 40 - base) / scale);
+        y = MathHelper.floor((y - base) / scale);
         int count = chatMessageGui.getLineCount();
         return 0 <= x && x <= MathHelper.floor(getChatWidth() / scale) && 0 <= y && y < (mc.fontRenderer.FONT_HEIGHT + 1) * count;
     }
@@ -179,9 +183,5 @@ public class GuiNewChatExt extends GuiNewChat {
 
     private int getChatMessageHeight() {
         return (getChatOpen() ? ModConfiguration.focusedChatMessageHeight : ModConfiguration.unfocusedChatMessageHeight) * mc.fontRenderer.FONT_HEIGHT;
-    }
-
-    private int getInterval() {
-        return ModConfiguration.interval;
     }
 }
