@@ -18,7 +18,7 @@ import java.lang.reflect.Modifier;
 public class SeparateChatMod {
     public static final String MOD_ID = "separate-chat-mod";
     public static final String MOD_NAME = "Separate Chat Mod";
-    public static final String VERSION = "1.1";
+    public static final String VERSION = "1.2";
 
     public SeparateChatMod() {
         MinecraftForge.EVENT_BUS.register(this);
