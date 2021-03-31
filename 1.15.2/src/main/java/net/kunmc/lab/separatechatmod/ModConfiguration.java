@@ -20,7 +20,7 @@ public class ModConfiguration {
         focusedSystemMessageHeight = builder.define("focusedSystemMessageHeight", 3);
         unfocusedChatMessageHeight = builder.define("unfocusedChatMessageHeight", 7);
         unfocusedSystemMessageHeight = builder.define("unfocusedSystemMessageHeight", 3);
-        chatPatterns = builder.defineList("chatPatterns", Arrays.asList("<\\w{3,16}> .+", "\\[Server] .+"), obj -> obj instanceof String);
+        chatPatterns = builder.defineList("chatPatterns", Arrays.asList("<\\w{3,16}> .+", "\\[Server] .+", "\\w{3,16} whispers to you: .+", "You whisper to \\w{3,16}: .+", "\\w{3,16} にささやかれました: .+", "\\w{3,16} にささやきました: .+"), obj -> obj instanceof String);
         SPEC = builder.build();
     }
 }
