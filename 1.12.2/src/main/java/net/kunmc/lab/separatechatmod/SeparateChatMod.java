@@ -4,11 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.reflect.Field;
@@ -18,7 +15,7 @@ import java.lang.reflect.Modifier;
 public class SeparateChatMod {
     public static final String MOD_ID = "separate-chat-mod";
     public static final String MOD_NAME = "Separate Chat Mod";
-    public static final String VERSION = "1.2";
+    public static final String VERSION = "1.3";
 
     public SeparateChatMod() {
         MinecraftForge.EVENT_BUS.register(this);
